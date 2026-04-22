@@ -107,6 +107,93 @@ function closeCart() {
     cartModal.style.display = 'none';
 }
 
+// Fungsi buka checkout
+function openCheckout() {
+    if (cart.length === 0) {
+        alert('Cart kamu kosong! Tambahkan produk dulu.');
+        return;
+    }
+    
+    const checkoutModal = document.getElementById('checkout');
+    const checkoutItemCount = document.getElementById('checkout-item-count');
+    const checkoutTotal = document.getElementById('checkout-total');
+    
+    let total = 0;
+    cart.forEach(item => {
+        total += item.price * item.quantity;
+    });
+    
+    checkoutItemCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+    checkoutTotal.textContent = total.toLocaleString('id-ID');
+    
+    closeCart();
+    checkoutModal.style.display = 'flex';
+}
+
+// Fungsi tutup checkout
+function closeCheckout() {
+    const checkoutModal = document.getElementById('checkout');
+    checkoutModal.style.display = 'none';
+}
+
+// Fungsi konfirmasi order
+function confirmOrder() {
+    const fullname = document.getElementById('fullname').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const address = document.getElementById('address').value;
+    const payment = document.querySelector('input[name="payment"]:checked').value;
+    
+    // Validasi
+    if (!fullname || !email || !phone || !address) {
+        alert('Semua field harus diisi!');
+        return;
+    }
+    
+    // Buat order number random
+    const orderNumber = 'ORD-' + Date.now();
+    
+    // Simpan order ke localStorage
+    const orders = JSON.parse(localStorage.getItem('orders')) || [];
+    orders.push({
+        orderNumber: orderNumber,
+        fullname: fullname,
+        email: email,
+        phone: phone,
+        address: address,
+        payment: payment,
+        items: cart,
+        totalPrice: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+        date: new Date().toLocaleDateString('id-ID')
+    });
+    localStorage.setItem('orders', JSON.stringify(orders));
+    
+    // Tampilkan success modal
+    const successModal = document.getElementById('success-modal');
+    const orderNumberEl = document.getElementById('order-number');
+    orderNumberEl.textContent = orderNumber;
+    
+    closeCheckout();
+    successModal.style.display = 'flex';
+    
+    // Clear cart
+    cart = [];
+    saveCart();
+    updateCartUI();
+}
+
+// Fungsi kembali ke home
+function backToHome() {
+    const successModal = document.getElementById('success-modal');
+    successModal.style.display = 'none';
+    
+    // Reset form
+    document.getElementById('checkout-form').reset();
+    
+    // Scroll ke top
+    window.scrollTo(0, 0);
+}
+
 // Fungsi search
 function searchProducts() {
     const searchValue = document.getElementById('search-input').value.toLowerCase();

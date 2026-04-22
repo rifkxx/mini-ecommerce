@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexaShop - E-Commerce Store</title>
+    <title>RifkiShop - E-Commerce Store</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -58,8 +58,62 @@
             </div>
             <div class="cart-footer">
                 <p>Total: Rp <span id="total-price">0</span></p>
-                <button class="checkout-btn">Checkout</button>
+                <button type="button" class="checkout-btn" onclick="openCheckout()">Checkout</button>
             </div>
+        </div>
+    </section>
+
+    <!-- Checkout Modal -->
+    <section id="checkout" class="checkout-modal" style="display: none;">
+        <div class="checkout-content">
+            <span class="close-btn" onclick="closeCheckout()">&times;</span>
+            <h2>Checkout</h2>
+            
+            <form id="checkout-form" class="checkout-form">
+                <h3>Informasi Pengiriman</h3>
+                
+                <input type="text" id="fullname" placeholder="Nama Lengkap" class="form-input" required>
+                <input type="email" id="email" placeholder="Email" class="form-input" required>
+                <input type="tel" id="phone" placeholder="Nomor Telepon" class="form-input" required>
+                <textarea id="address" placeholder="Alamat Lengkap" class="form-input" rows="4" required></textarea>
+                
+                <h3 style="margin-top: 25px;">Metode Pembayaran</h3>
+                
+                <div class="payment-methods">
+                    <label class="payment-option">
+                        <input type="radio" name="payment" value="transfer" checked>
+                        <span>💳 Transfer Bank</span>
+                    </label>
+                    <label class="payment-option">
+                        <input type="radio" name="payment" value="ewallet">
+                        <span>📱 E-Wallet (GCash, OVO, Dana)</span>
+                    </label>
+                    <label class="payment-option">
+                        <input type="radio" name="payment" value="cod">
+                        <span>🚚 Bayar di Tempat (COD)</span>
+                    </label>
+                </div>
+
+                <div class="checkout-summary">
+                    <p><strong>Total Items:</strong> <span id="checkout-item-count">0</span></p>
+                    <p><strong>Total Harga:</strong> Rp <span id="checkout-total">0</span></p>
+                    <p style="font-size: 12px; color: #999; margin-top: 10px;">💬 Ongkos kirim akan dihitung setelah konfirmasi alamat</p>
+                </div>
+
+                <button type="button" class="btn-confirm-order" onclick="confirmOrder()">Konfirmasi Pemesanan</button>
+                <button type="button" class="btn-cancel-order" onclick="closeCheckout()">Batalkan</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Success Modal -->
+    <section id="success-modal" class="success-modal" style="display: none;">
+        <div class="success-content">
+            <div class="success-icon">✅</div>
+            <h2>Pesanan Berhasil!</h2>
+            <p class="order-number" id="order-number">Order #12345</p>
+            <p class="order-status">Pesanan Anda sedang diproses. Kami akan menghubungi Anda segera.</p>
+            <button type="button" class="btn-back-home" onclick="backToHome()">Kembali ke Home</button>
         </div>
     </section>
 

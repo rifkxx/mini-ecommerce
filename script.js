@@ -208,6 +208,155 @@ function searchProducts() {
     displayProducts(filtered);
 }
 
+// ============ ORDER HISTORY FUNCTIONS ============
+
+// Fungsi buka order history
+function openOrderHistory() {
+    const orders = JSON.parse(localStorage.getItem('orders')) || [];
+    const orderHistoryModal = document.getElementById('order-history');
+    const ordersList = document.getElementById('orders-list');
+    const emptyOrders = document.getElementById('empty-orders');
+    
+    if (orders.length === 0) {
+        ordersList.style.display = 'none';
+        emptyOrders.style.display = 'block';
+    } else {
+        ordersList.style.display = 'flex';
+        emptyOrders.style.display = 'none';
+        
+        ordersList.innerHTML = '';
+        orders.reverse().forEach((order, index) => {
+            const itemsPreview = order.items.map(item => `${item.name} (x${item.quantity})`).join(', ');
+            const orderCard = document.createElement('div');
+            orderCard.className = 'order-card';
+            orderCard.innerHTML = `
+                <div class="order-card-header">
+                    <span class="order-number">${order.orderNumber}</span>
+                    <span class="order-date">${order.date}</span>
+                </div>
+                <div class="order-card-body">
+                    <div class="order-items-preview">${itemsPreview}</div>
+                </div>
+                <div class="order-card-footer">
+                    <div class="order-total">
+                        Total: <span class="order-price">Rp ${order.totalPrice.toLocaleString('id-ID')}</span>
+                    </div>
+                    <div style="display: flex; gap: 5px;">
+                        <button class="btn-view-detail" onclick="viewOrderDetail(${orders.length - 1 - index})">Detail</button>
+                        <button class="btn-delete-order" onclick="deleteOrder(${orders.length - 1 - index})">Delete</button>
+                    </div>
+                </div>
+            `;
+            ordersList.appendChild(orderCard);
+        });
+    }
+    
+    orderHistoryModal.style.display = 'flex';
+}
+
+// Fungsi tutup order history
+function closeOrderHistory() {
+    const orderHistoryModal = document.getElementById('order-history');
+    orderHistoryModal.style.display = 'none';
+}
+
+// Fungsi lihat detail order
+function viewOrderDetail(index) {
+    const orders = JSON.parse(localStorage.getItem('orders')) || [];
+    const order = orders[index];
+    
+    if (!order) return;
+    
+    const orderDetailModal = document.getElementById('order-detail');
+    const orderDetailInfo = document.getElementById('order-detail-info');
+    
+    let itemsHtml = '';
+    order.items.forEach(item => {
+        itemsHtml += `
+            <div class="detail-item">
+                <span class="detail-item-name">${item.name}</span>
+                <span class="detail-item-qty">x${item.quantity}</span>
+                <span class="detail-item-price">Rp ${(item.price * item.quantity).toLocaleString('id-ID')}</span>
+            </div>
+        `;
+    });
+    
+    orderDetailInfo.innerHTML = `
+        <div class="detail-section">
+            <h3>Nomor Pesanan</h3>
+            <div class="detail-row">
+                <span class="detail-label">Order ID</span>
+                <span class="detail-value">${order.orderNumber}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Tanggal</span>
+                <span class="detail-value">${order.date}</span>
+            </div>
+        </div>
+        
+        <div class="detail-section">
+            <h3>Informasi Pengiriman</h3>
+            <div class="detail-row">
+                <span class="detail-label">Nama</span>
+                <span class="detail-value">${order.fullname}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Email</span>
+                <span class="detail-value">${order.email}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Telepon</span>
+                <span class="detail-value">${order.phone}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Alamat</span>
+                <span class="detail-value">${order.address}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Metode Pembayaran</span>
+                <span class="detail-value">${order.payment.toUpperCase()}</span>
+            </div>
+        </div>
+        
+        <div class="detail-section">
+            <h3>Item Pesanan</h3>
+            <div class="detail-items">
+                ${itemsHtml}
+            </div>
+        </div>
+        
+        <div class="detail-section">
+            <div class="detail-row">
+                <span class="detail-label">TOTAL HARGA</span>
+                <span class="detail-value">Rp ${order.totalPrice.toLocaleString('id-ID')}</span>
+            </div>
+        </div>
+        
+        <button type="button" class="btn-close-detail" onclick="closeOrderDetail()">Tutup</button>
+    `;
+    
+    orderDetailModal.style.display = 'flex';
+}
+
+// Fungsi tutup order detail
+function closeOrderDetail() {
+    const orderDetailModal = document.getElementById('order-detail');
+    orderDetailModal.style.display = 'none';
+}
+
+// Fungsi delete order
+function deleteOrder(index) {
+    if (confirm('Yakin ingin menghapus pesanan ini?')) {
+        const orders = JSON.parse(localStorage.getItem('orders')) || [];
+        orders.splice(index, 1);
+        localStorage.setItem('orders', JSON.stringify(orders));
+        
+        // Update UI
+        openOrderHistory();
+        alert('Pesanan berhasil dihapus!');
+    }
+}
+
 // Event listeners
 document.getElementById('search-input').addEventListener('keyup', searchProducts);
 document.getElementById('category-filter').addEventListener('change', searchProducts);

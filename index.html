@@ -15,6 +15,7 @@
                 <a href="#home">Home</a>
                 <a href="#products">Products</a>
                 <a href="#cart" class="cart-btn">🛒 Cart (<span id="cart-count">0</span>)</a>
+                <a href="#history" onclick="openOrderHistory()" class="history-btn">📋 Order History</a>
             </nav>
         </div>
     </header>
@@ -114,6 +115,34 @@
             <p class="order-number" id="order-number">Order #12345</p>
             <p class="order-status">Pesanan Anda sedang diproses. Kami akan menghubungi Anda segera.</p>
             <button type="button" class="btn-back-home" onclick="backToHome()">Kembali ke Home</button>
+        </div>
+    </section>
+
+    <!-- Order History Modal -->
+    <section id="order-history" class="order-history-modal" style="display: none;">
+        <div class="order-history-content">
+            <span class="close-btn" onclick="closeOrderHistory()">&times;</span>
+            <h2>📋 Riwayat Pesanan</h2>
+            
+            <div id="orders-list" class="orders-list">
+                <!-- Orders akan ditampilkan di sini -->
+            </div>
+            
+            <div id="empty-orders" class="empty-state" style="display: none;">
+                <p>Belum ada pesanan. Mulai berbelanja sekarang! 🛍️</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Detail Modal -->
+    <section id="order-detail" class="order-detail-modal" style="display: none;">
+        <div class="order-detail-content">
+            <span class="close-btn" onclick="closeOrderDetail()">&times;</span>
+            <h2>Detail Pesanan</h2>
+            
+            <div id="order-detail-info" class="order-detail-info">
+                <!-- Order detail ditampilkan di sini -->
+            </div>
         </div>
     </section>
 
